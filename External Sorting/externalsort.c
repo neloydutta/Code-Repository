@@ -63,7 +63,7 @@ void merge_files(int size, char *outfile){
     FILE *outputfile = fopen(outfile,"w");
     FILE *intermediate_infile[500];
     FILE *intermediate_outfile;
-    char temp[100];
+    char temp[1000000];
     int level = 0;
     int intermediate_outfile_count = size;
     int completed_file_count = 0;
