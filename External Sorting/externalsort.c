@@ -71,6 +71,7 @@ void merge_files(int size, char *outfile){
     while(intermediate_outfile_count > 1){
         intermediate_outfile_count = 0;
         completed_file_count = 0;
+        previdx = 0;
         while(completed_file_count < size){
             eof_count = 0;
             sprintf(temp, "out%d%d.txt", level+1, ++intermediate_outfile_count);
