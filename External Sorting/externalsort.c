@@ -63,17 +63,20 @@ void merge_files(int size, char *outfile){
     FILE *outputfile = fopen(outfile,"w");
     FILE *intermediate_infile[500];
     FILE *intermediate_outfile;
-    char temp[100];
+    char temp[1000000];
     int level = 0;
     int intermediate_outfile_count = size;
     int completed_file_count = 0;
+    int previdx = 0;
     while(intermediate_outfile_count > 1){
         intermediate_outfile_count = 0;
+        completed_file_count = 0;
         while(completed_file_count < size){
-            sprintf(temp, "out%d%d.txt", level+1, intermediate_outfile_count++);
+            eof_count = 0;
+            sprintf(temp, "out%d%d.txt", level+1, ++intermediate_outfile_count);
             intermediate_outfile = fopen(temp, "w");
-            for(i=0; i<500 && i<size; i++){
-                sprintf(temp,"out%d%d.txt",level,i+1);
+            for(i=0; i<500 && completed_file_count<size; i++){
+                sprintf(temp,"out%d%d.txt",level,completed_file_count+1);
                 intermediate_infile[i] = fopen(temp,"r");
                 completed_file_count += 1;
                 if(!feof(intermediate_infile[i])){
@@ -84,8 +87,8 @@ void merge_files(int size, char *outfile){
                     eof_count += 1;
                 }
             }
-            while(eof_count < completed_file_count){
-                min_index = pick_minimum(num, size);
+            while(eof_count < i){
+                min_index = pick_minimum(num, i);
                 fprintf(intermediate_outfile, "%d\n", num[min_index]);
                 if(!feof(intermediate_infile[min_index])){
                     fscanf(intermediate_infile[min_index],"%d",&num[min_index]);
@@ -94,21 +97,25 @@ void merge_files(int size, char *outfile){
                     num[min_index] = INT_MAX;
                     eof_count += 1;
                     fclose(intermediate_infile[min_index]);
-                    sprintf(temp,"out%d%d.txt", level, min_index+1);
+                    sprintf(temp,"out%d%d.txt", level, previdx+min_index+1);
+                    printf("%s\n",temp);
                     unlink(temp);
                 }
             }
+            previdx = completed_file_count;
             fclose(intermediate_outfile);
         }
-        completed_file_count = 0;
         level += 1;
+        size = intermediate_outfile_count;
     }
-    sprintf(temp, "out%d%d.txt", level, 0);
+    sprintf(temp, "out%d%d.txt", level, 1);
     intermediate_outfile = fopen(temp, "r");
     while((size=fread(temp,1,100,intermediate_outfile)) != 0){
         fwrite(temp, 1, size, outputfile);
     }
-    sprintf(temp, "out%d%d.txt", level, 0);
+    fclose(intermediate_outfile);
+    sprintf(temp, "out%d%d.txt", level, 1);
+    printf("%s",temp);
     unlink(temp);
     fclose(outputfile);
     return;
@@ -144,7 +151,7 @@ void externalsort(char *input_filename, char *output_filename, unsigned long lon
 
 int main(){
     unsigned long long int max_run_size = 500000;
-    char *input_filename = "file.txt";
+    char *input_filename = "file1.txt";
     char *output_filename = "out.txt";
     externalsort(input_filename, output_filename, max_run_size);
     return 0;
