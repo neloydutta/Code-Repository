@@ -109,7 +109,7 @@ void merge_files(int size, char *outfile){
     }
     sprintf(temp, "out%d%d.txt", level, 1);
     intermediate_outfile = fopen(temp, "r");
-    while((size=fread(temp,1,100,intermediate_outfile)) != 0){
+    while((size=fread(temp,1,1000000,intermediate_outfile)) != 0){
         fwrite(temp, 1, size, outputfile);
     }
     fclose(intermediate_outfile);
