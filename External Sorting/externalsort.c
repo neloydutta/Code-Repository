@@ -98,7 +98,6 @@ void merge_files(int size, char *outfile){
                     eof_count += 1;
                     fclose(intermediate_infile[min_index]);
                     sprintf(temp,"out%d%d.txt", level, previdx+min_index+1);
-                    printf("%s\n",temp);
                     unlink(temp);
                 }
             }
